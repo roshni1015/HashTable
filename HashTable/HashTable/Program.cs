@@ -1,12 +1,42 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using HashTable;
 
-HashTable<string, int> hashTable = new(6);
-hashTable.Insert("To", 1);
-hashTable.Insert("be", 2);
-hashTable.Insert("or", 3);
-hashTable.Insert("not", 4);
-hashTable.Insert("to", 5);
-hashTable.Insert("be", 6);
-
-Console.WriteLine("Value of key 'be' is: " + hashTable.GetValue("be"));
+Console.WriteLine("Welcome to HashTable Operation!");
+while (true)
+{
+    Console.WriteLine("Please choose the option :\n1) Frequency of para1");
+    int option = Convert.ToInt16(Console.ReadLine());
+    switch (option)
+    {
+        case 1:
+            HashTable<string, int> hash = new HashTable<string, int>(5);
+            string Words = "To be or not to be";
+            string[] array = Words.Split(' ');
+            LinkedList<string> checkForDuplicationS = new LinkedList<string>();
+            foreach (string element in array)
+            {
+                int count = 0;
+                foreach (string match in array)
+                {
+                    if (element == match)
+                    {
+                        count++;
+                        if (checkForDuplicationS.Contains(element))
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (!checkForDuplicationS.Contains(element))
+                {
+                    checkForDuplicationS.AddLast(element);
+                    hash.Add(element, count);
+                }
+            }
+            hash.Display();
+            break;
+        default:
+            Console.WriteLine("Please choose the correct option!");
+            break;
+    }
+}
