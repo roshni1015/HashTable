@@ -4,7 +4,7 @@ using HashTable;
 Console.WriteLine("Welcome to HashTable Operation!");
 while (true)
 {
-    Console.WriteLine("Please choose the option :\n1) Frequency of Words");
+    Console.WriteLine("Please choose the option :\n1) Finding Frequency ");
     int option = Convert.ToInt16(Console.ReadLine());
     switch (option)
     {
