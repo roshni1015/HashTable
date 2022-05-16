@@ -7,53 +7,91 @@ using System.Threading.Tasks;
 namespace HashTable
 {
     public class HashTable<K, V>
-    {
-        public MyMapNode<K, V>[] Keys;
-        public int tableSize;
-
-        public HashTable(int maxTableSize)//Constructor
+     {
+        public int Size { get; set; }
+        public int Count { get; set; }
+        public LinkedList<keyValues<K, V>>[] items;
+        public HashTable(int size)
         {
-            tableSize = maxTableSize;
-            Keys = new MyMapNode<K, V>[tableSize];
+            this.Size = size;
+            this.items = new LinkedList<keyValues<K, V>>[size];
 
         }
-        public int HashFunction(K key)
+        public void Add(K key, V value)
         {
-            int position = key.GetHashCode() % tableSize; //identifying hash code of key
+            int position = GetArrayPosition(key);
+            LinkedList<keyValues<K, V>> linkedlist = GetLinkedlist(position);
+            keyValues<K, V> item = new keyValues<K, V>() { key = key, Value = value };
+            linkedlist.AddLast(item);
+        }
+        public int GetArrayPosition(K key)
+        {
+            int position = key.GetHashCode() % Size;
             return Math.Abs(position);
         }
-
-        public void Insert(K key, V value)
-        {
-            int genIndex = HashFunction(key);
-            MyMapNode<K, V> node = Keys[genIndex];
-
-            if (node == null)
-            {
-                Keys[genIndex] = new MyMapNode<K, V>() { Key = key, Value = value };
-                return;
-            }
-
-            MyMapNode<K, V> newNode = new() { Key = key, Value = value, Previous = node, Next = null };
-            node.Next = newNode;
-        }
-
         public V GetValue(K key)
         {
-            int genIndex = HashFunction(key);
-            MyMapNode<K, V> node = Keys[genIndex];
-            while (node != null)//search the linked list to match the key
+            int position = GetArrayPosition(key);
+            LinkedList<keyValues<K, V>> linkedlist = GetLinkedlist(position);
+            foreach (keyValues<K, V> item in linkedlist)
             {
-                if (node.Key.Equals(key))
+                if (item.key.Equals(key))
                 {
-                    return node.Value;
+                    return item.Value;
                 }
-                node = node.Next;
             }
-
-            throw new Exception("Don't have the key in hash!");
+            return default(V);
+        }
+        public LinkedList<keyValues<K, V>> GetLinkedlist(int position)
+        {
+            LinkedList<keyValues<K, V>> linkedlist = items[position];
+            if (linkedlist == null)
+            {
+                linkedlist = new LinkedList<keyValues<K, V>>();
+                items[position] = linkedlist;
+            }
+            return linkedlist;
+        }
+        public void Remove(K key)
+        {
+            int position = GetArrayPosition(key);
+            LinkedList<keyValues<K, V>> linkedlist = GetLinkedlist(position);
+            bool itemFound = false;
+            keyValues<K, V> founditem = default(keyValues<K, V>);
+            foreach (keyValues<K, V> item in linkedlist)
+            {
+                if (item.key.Equals(key))
+                {
+                    itemFound = true;
+                    founditem = item;
+                }
+            }
+            if (itemFound)
+            {
+                linkedlist.Remove(founditem);
+            }
         }
 
+
+        public void Display()
+        {
+            foreach (var linkedList in items)
+            {
+                if (linkedList != null)
+                {
+                    foreach (keyValues<K, V> keyvalue in linkedList)
+                    {
+                        Console.WriteLine(keyvalue.key + " --> " + keyvalue.Value);
+                    }
+                }
+            }
+        }
+    }
+
+    public struct keyValues<K, V>
+    {
+        public K key { get; set; }
+        public V Value { get; set; }
     }
 }
    
